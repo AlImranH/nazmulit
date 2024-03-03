@@ -37,8 +37,8 @@
                                     <th scope="row">{{ ++index }}</th>
                                     <td>{{ brand.name }}</td>
                                     <td class="text-center">
-                                        <router-link :to="{name:'editCategory', params:{id: brand.id}}" class="btn btn-warning btn-sm m-1"><i class="bi bi-pencil"></i></router-link>
-                                        <a @click="removeCategory(brand.id)" class="btn btn-danger btn-sm m-1" title="Remove"><i class="bi bi-trash-fill"></i></a>
+                                        <router-link :to="{name:'editBrand', params:{id: brand.id}}" class="btn btn-warning btn-sm m-1"><i class="bi bi-pencil"></i></router-link>
+                                        <a @click="removeBrand(brand.id)" class="btn btn-danger btn-sm m-1" title="Remove"><i class="bi bi-trash-fill"></i></a>
                                         <!-- <router-link class="btn btn-warning">Edit</router-link> -->
                                     </td>
                                 </tr>
@@ -94,7 +94,7 @@ export default{
                 )
         },
 
-        removeCategory(id) {
+        removeBrand(id) {
             Swal.fire({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
