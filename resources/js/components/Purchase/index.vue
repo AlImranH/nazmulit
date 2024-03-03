@@ -1,0 +1,186 @@
+<template>
+    <Header></Header>
+    <Sidebar></Sidebar>
+    <!-- Start main section -->
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Employees</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">All Employee</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+        <section>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            All Employees
+                            <router-link to="/purchase-create" class="btn btn-primary btn-sm float-end">Add Purchase</router-link>
+                        </div>
+                        <div class="card-body mt-3">
+                            <label for="search">Search</label>
+                            <input class="form-control mb-2" id="search" v-model="searchItem">
+                            <!-- Table with stripped rows -->
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Invoice</th>
+                                        <th scope="col">Supplier</th>
+                                        <th scope="col">Total Amount</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(purchases, index) in filterSearch" :keys="index">
+                                        <th scope="row">{{ ++index }}</th>
+                                        <td>
+                                            <router-link to="#" @click="purchaseDetails(purchases.invoice_no)" data-bs-toggle="modal" data-bs-target="#detailsModal">{{ purchases.invoice_no }}</router-link>
+                                        </td>
+                                        <td>{{ purchases.supplier.name }}</td>
+                                        <td>{{ purchases.total_amount }}</td>
+                                        <td>{{ purchases.date }}</td>
+                                        <td>
+                                            <a @click="removePurchase(purchases.id)" class="btn btn-danger btn-sm m-1">Delete</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Details Modal-->
+    <div class="modal fade modal-lg" id="detailsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Purchase Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table datatable">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Items</th>
+                            <th class="text-end">Unit Price</th>
+                            <th class="text-end">Qty</th>
+                            <th class="text-end">Total Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(detail, index) in details" :keys="index">
+                            <th scope="row">{{ ++index }}</th>
+                            <td>
+                                {{detail.category.name}} {{detail.brand.name}} {{detail.model.name}} {{detail.specifications}} <br>
+                                [<span v-for="serial in detail.serial_arr"><small>{{serial}},</small></span>]
+                            </td>
+                            <td class="text-end">{{detail.unit_price}}</td>
+                            <td class="text-end">{{detail.qty}}</td>
+                            <td class="text-end">{{detail.total_amount}}</td>
+
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Details Modal-->
+
+    <!-- End main section -->
+    <Footer></Footer>
+
+</template>
+
+<script>
+ import Header from '../Header.vue'
+ import Sidebar from '../Sidebar.vue'
+ import Footer from '../Footer.vue'
+
+export default{
+    data(){
+        return{
+            purchases: [],
+            details: [],
+            searchItem: ''
+        }
+    },
+    computed:{
+        filterSearch(){
+            return this.purchases.filter(purchase => {
+                return purchase.invoice_no.match(this.searchItem);
+            })
+        }
+    },
+    created(){
+        if(!User.loggedIn()){
+            this.$router.push('/login')
+        }
+        this.allPurchases()
+    },
+    components: {Header:Header, Sidebar: Sidebar, Footer: Footer},
+    methods: {
+        allPurchases(){
+            axios.get('/api/purchase')
+            .then(res => {
+                console.log('ok');
+                this.purchases = res.data;
+            })
+            .catch(
+                error => console.log(error.response)
+            )
+        },
+
+        purchaseDetails(invoiceNO){
+            axios.get('/api/purchase/'+invoiceNO)
+                .then(res => {
+                    console.log(res.data);
+                    this.details = res.data;
+                })
+                .catch(error => {
+                    console.log(error.response)
+                })
+        },
+
+        removePurchase(id){
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    axios.delete('/api/purchase/'+id)
+                    .then(()=>{
+
+                    })
+                    .catch(() => {
+                        this.$router.push({name:'allEmployee'})
+                    })
+                if (result.isConfirmed) {
+                    Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success"
+                    });
+                }
+                });
+        }
+    }
+}
+</script>

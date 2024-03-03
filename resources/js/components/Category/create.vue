@@ -1,0 +1,95 @@
+<template>
+    <Header></Header>
+    <Sidebar></Sidebar>
+    <!-- Start main section -->
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Category</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
+                    <li class="breadcrumb-item active">Add New Category</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+
+        <section>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            Add New Category
+                            <router-link to="/category" class="btn btn-primary btn-sm float-end">All Category</router-link>
+                        </div>
+                        <div class="card-body mt-3">
+                            <form class="row g-3" @submit.prevent="storeCategory" enctype="multipart/form-data">
+                                <div class="col-md-12">
+                                    <label for="validationCustom01" class="form-label"> Name</label>
+                                    <input type="text" class="form-control" id="validationCustom01" v-model="form.name">
+                                    <div class="valid-feedback" v-if="errors.name">
+                                    {{ errors.name[0] }}
+                                    </div>
+                                </div>
+
+
+                                <div class="mb-3">
+                                    <button class="btn btn-primary" type="submit">Save</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- End main section -->
+    <Footer></Footer>
+
+</template>
+
+<script>
+ import Header from '../Header.vue'
+ import Sidebar from '../Sidebar.vue'
+ import Footer from '../Footer.vue'
+
+export default{
+    components: {Header:Header, Sidebar: Sidebar, Footer: Footer},
+    created(){
+        if(!User.loggedIn()){
+            this.$router.push('/login')
+        }
+    },
+    data(){
+        return{
+            form: {
+                name:''
+            },
+            errors:{}
+        }
+    },
+    methods:{
+        storeCategory(){
+            axios.post('api/category/store', this.form)
+            .then(
+                res => {
+                    this.$router.push('/category')
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Category has been added successfully.'
+                    })
+                    console.log(res.data);
+                }
+
+            )
+            .catch(
+                error => {
+                    this.errors = error.response.data.errors;
+                    // console.log(this.errors.full_name[0]);
+                }
+            )
+        }
+    }
+
+}
+</script>
