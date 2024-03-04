@@ -109,7 +109,6 @@ export default{
                         icon: 'success',
                         title: 'Supplier has been added successfully.'
                     })
-                    console.log(res.data);
                 }
 
             )
