@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <label for="validationCustom05" class="form-label">Web</label>
-                                    <input type="text" class="form-control" id="validationCustom05" v-model="form.web" required>
+                                    <input type="text" class="form-control" id="validationCustom05" v-model="form.web">
                                     <div class="valid-feedback" v-if="errors.web">
                                     {{ errors.web[0] }}
                                     </div>

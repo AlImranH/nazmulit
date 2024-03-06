@@ -34,7 +34,7 @@ class SupplierController extends Controller
             'name' => 'required|max:255',
             'mobile' => 'required',
             'email' => 'required|email',
-            'web' => 'url:http,https',
+            'web' => 'url',
             'address' => 'required',
 
         ]);

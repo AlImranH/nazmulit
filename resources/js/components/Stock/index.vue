@@ -7,7 +7,9 @@
             <h1>Stocks</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item">
+                        <router-link to="/">Home</router-link>
+                    </li>
                     <li class="breadcrumb-item active">All Stock</li>
                 </ol>
             </nav>

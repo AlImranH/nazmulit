@@ -117,7 +117,7 @@
             </li>
             <li>
                 <router-link to="/models">
-                    <i class="bi bi-circle"></i><span>All Brand</span>
+                    <i class="bi bi-circle"></i><span>All Models</span>
                 </router-link>
             </li>
 

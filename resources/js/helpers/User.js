@@ -4,7 +4,6 @@ import AppStorage from './AppStore.js'
 class User {
 
     responseAfterLogin(res){
-
         const access_token = res.data.access_token;
         const username = res.data.name;
 

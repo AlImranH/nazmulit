@@ -1,11 +1,11 @@
 class AppStorage{
 
     storeToken(token){
-        window.localStorage.setItem('token', token);
+        localStorage.setItem('token', token);
     }
 
     storeUser(user){
-        window.localStorage.setItem('user', user);
+        localStorage.setItem('user', user);
     }
 
     store(token, user){
@@ -14,16 +14,16 @@ class AppStorage{
     }
 
     clear(){
-        window.localStorage.removeItem('token');
-        window.localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
     }
 
     getToken(){
-        window.localStorage.getItem('token');
+        localStorage.getItem('token');
     }
 
     getUser(){
-        window.localStorage.getItem('user');
+        localStorage.getItem('user');
     }
 }
 

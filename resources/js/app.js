@@ -8,7 +8,7 @@ import '../assets/vendor/quill/quill.min';
 import '../assets/vendor/simple-datatables/simple-datatables';
 import '../assets/vendor/tinymce/tinymce.min';
 import '../assets/vendor/php-email-form/validate';
-import '../assets/js/main';
+import '../assets/js/main.js';
 
 
 import { createApp } from 'vue';
@@ -23,6 +23,9 @@ window.User = User;
 //start sweet alert2
 import Swal from 'sweetalert2'
 window.Swal = Swal
+
+
+
 
 
 
