@@ -31,6 +31,8 @@ class ItemModelController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'category_id' => 'required|max:255',
+            'brand_id' => 'required|max:255',
             'name' => 'required|max:255',
 
         ]);

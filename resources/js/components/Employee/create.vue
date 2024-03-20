@@ -155,7 +155,6 @@ export default{
                         icon: 'success',
                         title: 'Employee has been added successfully.'
                     })
-                    console.log(res.data);
                 }
 
             )

@@ -70,7 +70,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Items</th>
+                            <th style="max-width: 200px;">Items</th>
                             <th class="text-end">Unit Price</th>
                             <th class="text-end">Qty</th>
                             <th class="text-end">Total Price</th>
@@ -79,9 +79,9 @@
                         <tbody>
                         <tr v-for="(detail, index) in details" :keys="index">
                             <th scope="row">{{ ++index }}</th>
-                            <td>
+                            <td style="max-width: 200px;">
                                 {{detail.category.name}} {{detail.brand.name}} {{detail.model.name}} {{detail.specifications}} <br>
-                                [<span v-for="serial in detail.serial_arr"><small>{{serial}},</small></span>]
+                                [<span ><small v-for="serial in detail.serial_arr">{{serial}} ,</small></span>]
                             </td>
                             <td class="text-end">{{detail.unit_price}}</td>
                             <td class="text-end">{{detail.qty}}</td>

@@ -43,7 +43,7 @@ class Stock extends Model
             'qty' => $datas[0]['qty'],
             'unit_price' => $datas[0]['unit_price'],
             'sales_price' => $datas[0]['sales_price'],
-            'warranty' => $datas[0]['warranty'],
+            // 'warranty' => $datas[0]['warranty'],
             'total_amount' => $datas[0]['total_amount']
         ];
         $i = 0;

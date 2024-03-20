@@ -20,7 +20,7 @@
                     <div class="card">
                         <div class="card-header">
                             All Stock
-
+                            <p class="float-end text-dark fw-bold">Total Stock Value = {{ stockValue }} tk</p>
                         </div>
                         <div class="card-body mt-3">
                             <label for="search">Search</label>
@@ -36,7 +36,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="(stock, index) in stocks" :keys="index">
+                                <tr v-for="(stock, index) in filterSearch" :keys="index">
                                     <th scope="row">{{ ++index }}</th>
                                     <td>
                                         {{stock.category.name}} {{stock.brand.name}} {{stock.model.name}} {{stock.specifications}} <br>
@@ -46,6 +46,7 @@
 
                                 </tr>
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -70,9 +71,17 @@ export default{
     data(){
         return{
             stocks: [],
+            stockValue: '',
+            searchItem: ''
         }
     },
-
+    computed:{
+        filterSearch(){
+            return this.stocks.filter(stock => {
+                return stock.category.name.toLowerCase().match(this.searchItem);
+            })
+        }
+    },
     created(){
         if(!User.loggedIn()){
             this.$router.push('/login')
@@ -84,8 +93,10 @@ export default{
         allStocks(){
             axios.get('/api/stocks')
                 .then(res => {
-                    console.log(res.data);
                     this.stocks = res.data;
+                    this.stocks.forEach(stock => {
+                        this.stockValue = Number(this.stockValue) + Number(stock.total_amount);
+                    });
                 })
                 .catch(
                     error => console.log(error.response)

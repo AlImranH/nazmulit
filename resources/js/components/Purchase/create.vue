@@ -122,10 +122,9 @@
                                     <div class="col-md-3">
                                         <label for="validationCategory" class="form-label">Category</label>
                                         <i class="bi bi-patch-plus btn text-primary" type="button" data-bs-toggle="modal" data-bs-target="#CategoryModal"></i>
-                                        <v-select v-model="form.product.category_id" label="name" :options="categories" :reduce="categories => categories.id"></v-select>
-                                        <div class="valid-feedback" v-if="errors.nid">
-                                            {{ errors.nid[0] }}
-                                        </div>
+
+                                        <v-select v-model="form.product.category_id" label="name" :options="categories" :reduce="categories => categories.id" @option:selected="brandByCategory"></v-select>
+
                                     </div>
 
                                     <!-- CATEGORY MODAL-->
@@ -163,7 +162,7 @@
                                     <div class="col-md-3">
                                         <label for="validationBrand" class="form-label">Brand</label>
                                         <i class="bi bi-patch-plus btn text-primary" type="button" data-bs-toggle="modal" data-bs-target="#brandModal"></i>
-                                        <v-select v-model="form.product.brand_id" label="name" :options="brand" :reduce="brand => brand.id"></v-select>
+                                        <v-select v-model="form.product.brand_id" label="name" :options="brand" :reduce="brand => brand.id" @option:selected="modelByBrand"></v-select>
                                         <div class="valid-feedback" v-if="errors.nid">
                                             {{ errors.nid[0] }}
                                         </div>
@@ -205,7 +204,7 @@
                                     <div class="col-md-3">
                                         <label for="validationModel" class="form-label">Model</label>
                                         <i class="bi bi-patch-plus btn text-primary" type="button" data-bs-toggle="modal" data-bs-target="#modelModal"></i>
-                                        <v-select v-model="form.product.model_id" label="name" :options="model" :reduce="model => model.id"></v-select>
+                                        <v-select v-model="form.product.model_id" label="name" :options="model" :reduce="model => model.id" ></v-select>
                                         <div class="valid-feedback" v-if="errors.nid">
                                             {{ errors.nid[0] }}
                                         </div>
@@ -291,7 +290,9 @@
                                 <div class="row g-3" v-if="isAvailable">
                                     <div class="col-md-8">
                                         <label for="validationSalesSerialNo" class="form-label">Serial No</label>
-                                        <input type="text" class="form-control" id="validationSalesSerialNo" v-model="form.product.serial" @keyup.,="serialAdd" required>
+
+                                        <input type="text" class="form-control" id="validationSalesSerialNo" v-model="form.product.serial" @keyup.,="serialAdd">
+
                                         <div class="row">
                                             <div class="col-12">
                                                 <span v-for="serial in form.product.serial_arr"><small>{{serial}},</small></span>
@@ -322,7 +323,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Items</th>
+                                            <th style="max-width:200px">Items</th>
                                             <th class="text-end">Unit Price</th>
                                             <th class="text-end">Qty</th>
                                             <th class="text-end">Total Price</th>
@@ -332,7 +333,7 @@
                                     <tbody>
                                     <tr v-for="(item, index) in productList" :keys="index">
                                         <td>{{ ++index }}</td>
-                                        <td>
+                                        <td style="max-width:200px">
 
                                             {{item.category.name}} {{item.brand.name}} {{item.model.name}} {{ item.specifications}}<br>
                                            [<span v-for="serial in item.serial_arr"><small>{{serial}},</small></span>]
@@ -356,13 +357,13 @@
     </main>
     <!-- End main section -->
     <Footer></Footer>
-
 </template>
 
 <script>
  import Header from '../Header.vue'
  import Sidebar from '../Sidebar.vue'
  import Footer from '../Footer.vue'
+import axios from 'axios'
 
 export default{
     components: {Header:Header, Sidebar: Sidebar, Footer: Footer},
@@ -417,17 +418,15 @@ export default{
             },
             isAvailable: false,
             errors:{},
-            categories:'',
-            brand:'',
-            model:'',
-            suppliers:'',
+            categories:[],
+            brand:[],
+            model:[],
+            suppliers:[],
             supplierId:'',
         }
     },
+
     methods:{
-        // storePurchase(){
-        //     axios.post('api/purchase/store')
-        // },
         storeCategory(){
             axios.post('api/category/store', this.category)
                 .then(
@@ -485,7 +484,6 @@ export default{
                 )
         },
         storeModels(){
-            alert('ok');
             axios.post('api/models/store', this.modelData)
                 .then(
                     res => {
@@ -581,7 +579,12 @@ export default{
                     this.form.invoice.supplier_id = ''
                     this.form.invoice.date = ''
 
-                    console.log(res)
+                    console.log(res.data);
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Purchase has been added successfully.'
+                    })
                 })
                 .catch(err => console.log(err))
         },
@@ -612,7 +615,26 @@ export default{
                     });
                 }
             });
-        }
+        },
+
+        brandByCategory(category){
+          axios.get('/api/getBrandByCategory/'+category.id)
+            .then(res => {
+                this.brand = res.data;
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        },
+        modelByBrand(brand){
+          axios.get('/api/getModelByBrand/'+brand.id)
+            .then(res => {
+                this.model = res.data;
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        },
     }
 
 }

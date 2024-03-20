@@ -12,6 +12,7 @@ use App\Http\Controllers\ItemModelController;
 use App\Http\Controllers\TempPurchaseDetailsController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\CustomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,3 +95,8 @@ Route::delete('/purchase/{id}', [PurchaseController::class, 'destroy']);
 //Stock Route
 Route::get('/stocks', [StockController::class, 'index']);
 Route::get('/stocks/{id}', [StockController::class, 'show']);
+
+
+//Custom Route
+Route::get('/getBrandByCategory/{categoryId}',[CustomController::class, 'getBrandByCategory']);
+Route::get('/getModelByBrand/{brandId}',[CustomController::class, 'getModelByBrand']);

@@ -23,7 +23,16 @@
                         </div>
                         <div class="card-body mt-3">
                             <form class="row g-3" @submit.prevent="storeModels">
-                                <div class="col-md-12">
+                                <div class="col-md-4">
+                                    <label for="validationCustom01" class="form-label"> Category</label>
+                                    <v-select v-model="form.category_id" label="name" :options="categories" :reduce="categories => categories.id" @option:selected="brandByCategory"></v-select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="validationCustom01" class="form-label"> Brand</label>
+                                    <v-select v-model="form.brand_id" label="name" :options="brands" :reduce="brands => brands.id" ></v-select>
+                                </div>
+                                <div class="col-md-4">
                                     <label for="validationCustom01" class="form-label"> Name</label>
                                     <input type="text" class="form-control" id="validationCustom01" v-model="form.name">
                                     <div class="valid-feedback" v-if="errors.name">
@@ -59,13 +68,22 @@ export default{
         if(!User.loggedIn()){
             this.$router.push('/login')
         }
+        this.loadCategories();
+        this.loadBrands();
     },
+    // updated(){
+    //     this.brandByCategory();
+    // },
     data(){
         return{
             form: {
-                name:''
+                name:'',
+                category_id:'',
+                brand_id: '',
             },
-            errors:{}
+            categories:[],
+            brands:[],
+            errors:{},
         }
     },
     methods:{
@@ -85,7 +103,35 @@ export default{
                     this.errors = error.response.data.errors;
                 }
             )
-        }
+        },
+
+        loadCategories(){
+            axios.get('/api/category')
+                .then(res => {
+                    this.categories = res.data;
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+        loadBrands(){
+            axios.get('/api/brand')
+                .then(res => {
+                    this.brands = res.data;
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
+        brandByCategory(category){
+          axios.get('/api/getBrandByCategory/'+category.id)
+            .then(res => {
+                this.brands = res.data;
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        },
     }
 
 }

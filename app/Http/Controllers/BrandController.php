@@ -31,7 +31,8 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255',
+            'category_id' => 'required',
+            'name' => 'required|max:255|unique:brands,name',
 
         ]);
 
@@ -69,7 +70,8 @@ class BrandController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255',
+            'category_id' => 'required',
+            'name' => 'required|max:255|unique:brands,name',
         ]);
         Brand::find($id)->update($validated);
 

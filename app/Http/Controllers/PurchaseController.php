@@ -58,7 +58,7 @@ class PurchaseController extends Controller
                 'qty' => $data->qty,
                 'unit_price' => $data->unit_price,
                 'sales_price' => $data->sales_price,
-                'serial_arr' => $data->serial_arr,
+                'serial_arr' => empty($data->serial_arr) ? [] : $data->serial_arr,
                 'warranty' => $data->warranty,
                 'total_amount' => $data->total_amount
             ];
@@ -66,7 +66,23 @@ class PurchaseController extends Controller
             PurchaseDetails::create($purchaseDetailsData);
 
             $totalAmount += $data->total_amount;
-            foreach ($data->serial_arr as $serial){
+            if(!empty($data->serial_arr)){
+                foreach ($data->serial_arr as $serial){
+                    $itemArr[] = [
+                        'category_id' => $data->category_id,
+                        'brand_id' => $data->brand_id,
+                        'model_id' => $data->model_id,
+                        'specifications' => $data->specifications,
+                        'qty' => $data->qty,
+                        'unit_price' => $data->unit_price,
+                        'sales_price' => $data->sales_price,
+                        'serial' => $serial,
+                        'warranty' => $data->warranty,
+                        'total_amount' => $data->total_amount
+                    ];
+                }
+            }
+            else{
                 $itemArr[] = [
                     'category_id' => $data->category_id,
                     'brand_id' => $data->brand_id,
@@ -75,21 +91,27 @@ class PurchaseController extends Controller
                     'qty' => $data->qty,
                     'unit_price' => $data->unit_price,
                     'sales_price' => $data->sales_price,
-                    'serial' => $serial,
-                    'warranty' => $data->warranty,
+                    'serial' => '',
+                    'warranty' => 0,
                     'total_amount' => $data->total_amount
                 ];
             }
+
         }
 
+
+
+        // return $itemArr;
         $purchaseData['total_amount'] = $totalAmount;
 
-//        return $itemArr;
+    //    return $itemArr;
 //        return $purchaseDetailsData;
 
+            // return $purchaseData;
             Purchase::create($purchaseData);
 
             Product::insert($itemArr);
+            // Product::create($itemArr);
             Stock::updateStock($itemArr, 'purchase');
 //            return Stock::updateStock($itemArr, 'purchase');
 

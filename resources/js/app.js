@@ -20,6 +20,9 @@ import 'vue-select/dist/vue-select.css';
 import User from './helpers/User.js'
 window.User = User;
 
+import customeData from './helpers/customeData.js';
+window.customeData = customeData;
+
 //start sweet alert2
 import Swal from 'sweetalert2'
 window.Swal = Swal
@@ -51,7 +54,7 @@ import app from './components/App.vue';
 const App = createApp({})
 
 App.component("app", app);
-App.component("v-select", vSelect)
+App.component("v-select", vSelect);
 App.use(router);
 
 App.mount("#app")
