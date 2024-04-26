@@ -104,7 +104,8 @@ export default{
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
-                axios.delete('/api/brand/' + id)
+                if (result.isConfirmed) {
+                    axios.delete('/api/brand/' + id)
                     .then(() => {
                         this.brands = this.brands.filter(brand => {
                             return brand.id != id;
@@ -113,12 +114,17 @@ export default{
                     .catch(() => {
                         this.$router.push({name: 'allBrand'})
                     })
-                if (result.isConfirmed) {
                     Swal.fire({
                         title: "Deleted!",
                         text: "Your file has been deleted.",
                         icon: "success"
                     });
+                } else if(result.isDenied){
+                    Swal.fire({
+                        title: "Cancel",
+                        text: "Changes are not saved.",
+                        icon: "info"
+                    })
                 }
             });
         }

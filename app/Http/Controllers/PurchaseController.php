@@ -144,9 +144,10 @@ class PurchaseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Purchase $purchase)
+    public function edit($id)
     {
-        //
+        $purchase = Purchase::where('id',$id)->with('details')->first();
+        return response()->json($purchase);
     }
 
     /**

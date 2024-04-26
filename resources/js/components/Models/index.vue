@@ -104,7 +104,8 @@ export default{
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
-                axios.delete('/api/models/' + id)
+                if (result.isConfirmed) {
+                    axios.delete('/api/models/' + id)
                     .then(() => {
                         this.models = this.models.filter(model => {
                             return model.id != id;
@@ -113,11 +114,16 @@ export default{
                     .catch(() => {
                         this.$router.push({name: 'allModels'})
                     })
-                if (result.isConfirmed) {
                     Swal.fire({
                         title: "Deleted!",
                         text: "Your file has been deleted.",
                         icon: "success"
+                    });
+                } else if(result.isDenied){
+                    Swal.fire({
+                        title: "Cancel",
+                        text: "Changes are not saved.",
+                        icon: "info"
                     });
                 }
             });

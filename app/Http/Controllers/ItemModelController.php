@@ -38,9 +38,8 @@ class ItemModelController extends Controller
         ]);
 
         try{
-            ItemModel::create($validated);
-
-            return response("Model has been created successfylly", 200)->header('Content-Type', 'text/plain');
+            $itemModel = ItemModel::create($validated);
+            return response()->json(['model'=> $itemModel, 'success' => "Model has been created successfylly"]);
 
         }
         catch(Throwable $e){
@@ -71,6 +70,8 @@ class ItemModelController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
+            'category_id' => 'required|max:255',
+            'brand_id' => 'required|max:255',
             'name' => 'required|max:255',
         ]);
         ItemModel::find($id)->update($validated);

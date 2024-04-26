@@ -104,22 +104,30 @@ export default{
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Yes, delete it!"
                 }).then((result) => {
-                    axios.delete('/api/category/'+id)
-                    .then(()=>{
-                        this.categories = this.categories.filter(category => {
-                            return category.id != id;
+
+                    if (result.isConfirmed) {
+                        axios.delete('/api/category/'+id)
+                        .then(()=>{
+                            this.categories = this.categories.filter(category => {
+                                return category.id != id;
+                            })
                         })
+                        .catch(() => {
+                            this.$router.push({name:'allCategory'})
+                        })
+
+                        Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                        });
+                    } else if(result.isDenied){
+                        Swal.fire({
+                        title: "Cancel",
+                        text: "Changes are not saved.",
+                        icon: "info"
                     })
-                    .catch(() => {
-                        this.$router.push({name:'allCategory'})
-                    })
-                if (result.isConfirmed) {
-                    Swal.fire({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    icon: "success"
-                    });
-                }
+                    }
                 });
         }
     }

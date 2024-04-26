@@ -13,6 +13,7 @@ use App\Http\Controllers\TempPurchaseDetailsController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\CustomController;
+use App\Http\Controllers\PurchaseDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,9 +89,13 @@ Route::delete('/temp_purchase/{id}', [TempPurchaseDetailsController::class, 'des
 Route::get('/purchase', [PurchaseController::class, 'index']);
 Route::post('/purchase/store', [PurchaseController::class, 'store']);
 Route::get('/purchase/{id}', [PurchaseController::class, 'show']);
+Route::get('/purchase/edit/{id}', [PurchaseController::class, 'edit']);
 Route::get('/purchase/{invoice}', [PurchaseController::class, 'purchaseDetails']);
 Route::put('/purchase/update/{id}', [PurchaseController::class, 'update']);
 Route::delete('/purchase/{id}', [PurchaseController::class, 'destroy']);
+
+//Purchase Details Route
+Route::get('/purchase_details/{id}', [PurchaseDetailsController::class, 'show']);
 
 //Stock Route
 Route::get('/stocks', [StockController::class, 'index']);

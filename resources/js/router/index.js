@@ -15,6 +15,7 @@ import editEmployee from '../components/Employee/edit.vue'
 
 //Purchase components
 import createPurchase from '../components/Purchase/create.vue'
+import editPurchase from '../components/Purchase/edit.vue'
 import allPurchase from '../components/Purchase/index.vue'
 //Supplier components
 import createSuppler from '../components/Supplier/create.vue'
@@ -52,6 +53,7 @@ const routes =[
     //Purchase routes
     { path: '/purchase-create', component: createPurchase, name: 'createPurchase'},
     { path: '/purchases', component: allPurchase, name: 'allPurchase'},
+    { path: '/purchases/:id', component: editPurchase, name: 'editPurchase'},
 
     //Supplier routes
     {path: '/supplier-create', component: createSuppler, name:'createSupplier'},

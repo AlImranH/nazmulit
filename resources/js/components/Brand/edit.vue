@@ -23,11 +23,15 @@
                         </div>
                         <div class="card-body mt-3">
                             <form class="row g-3" @submit.prevent="updateBrand" enctype="multipart/form-data">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <label for="validationCustom01" class="form-label"> Category</label>
+                                    <v-select v-model="form.category_id" label="name" :options="categories" :reduce="categories => categories.id" multiple></v-select>
+                                </div>
+                                <div class="col-md-6">
                                     <label for="validationCustom01" class="form-label"> Name</label>
                                     <input type="text" class="form-control" id="validationCustom01" v-model="form.name">
-                                    <div class="valid-feedback" v-if="errors.name">
-                                    {{ errors.name[0] }}
+                                    <div class="valid-feedback" v-if="errors">
+                                    {{ errors }}
                                     </div>
                                 </div>
                                 <div class="mb-3">
@@ -57,13 +61,17 @@ export default{
         if(!User.loggedIn()){
             this.$router.push('/login')
         }
+        this.brandId = this.$route.params.id;
+        this.loadCategories();
     },
     data(){
         return{
             form: {
+                category_id:'',
                 name:'',
             },
             brandId:'',
+            categories:[],
             errors:{}
         }
     },
@@ -71,14 +79,12 @@ export default{
         // console.log(this.$route.params.id);
         this.getBrand(this.brandId);
     },
-    created(){
-        this.brandId = this.$route.params.id;
-    },
     methods:{
         getBrand(brandId){
             axios.get('/api/brand/'+brandId)
             .then(res => {
-                this.form = res.data;
+                this.form = res.data.brand;
+                this.form.category_id = res.data.category;
             })
             .catch(err => alert(err))
         },
@@ -86,21 +92,30 @@ export default{
             axios.put('/api/brand/update/'+this.brandId, this.form)
             .then(
                 res => {
+                    console.log(res.data);
                     this.$router.push('/brand')
                     Toast.fire({
                         icon: 'success',
                         title: 'Brand has been added successfully.'
                     })
-
                 }
-
             )
             .catch(
                 error => {
+                    console.log(error);
                     this.errors = error.response.data.errors;
                 }
             )
-        }
+        },
+        loadCategories(){
+            axios.get('/api/category')
+                .then(res => {
+                    this.categories = res.data;
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        },
     }
 
 }

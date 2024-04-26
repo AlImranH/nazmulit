@@ -27,8 +27,8 @@
                                     <div class="col-md-4">
                                         <label for="validationINV" class="form-label">INV No.</label>
                                         <input type="text" class="form-control" id="validationINV" v-model="form.invoice.invoice_no" required>
-                                        <div class="valid-feedback" v-if="errors.nid">
-                                            {{ errors.nid[0] }}
+                                        <div class="valid-feedback" v-if="errors.invoice_no">
+                                            {{ errors.invoice_no[0] }}
                                         </div>
                                     </div>
 
@@ -163,14 +163,14 @@
                                         <label for="validationBrand" class="form-label">Brand</label>
                                         <i class="bi bi-patch-plus btn text-primary" type="button" data-bs-toggle="modal" data-bs-target="#brandModal"></i>
                                         <v-select v-model="form.product.brand_id" label="name" :options="brand" :reduce="brand => brand.id" @option:selected="modelByBrand"></v-select>
-                                        <div class="valid-feedback" v-if="errors.nid">
-                                            {{ errors.nid[0] }}
+                                        <div class="valid-feedback" v-if="errors.brand_id">
+                                            {{ errors.brand_id[0] }}
                                         </div>
                                     </div>
 
                                     <!-- Brand Modal-->
                                     <div class="modal fade" id="brandModal" tabindex="-1">
-                                        <div class="modal-dialog">
+                                        <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title">Add New Brand</h5>
@@ -178,11 +178,15 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <form class="row g-3" @submit.prevent="storeBrand">
-                                                        <div class="col-md-12">
+                                                        <div class="col-md-6">
+                                                            <label for="validationCustom01" class="form-label"> Category</label>
+                                                            <v-select v-model="brandData.category_id" label="name" :options="categories" :reduce="categories => categories.id" ></v-select>
+                                                        </div>
+                                                        <div class="col-md-6">
                                                             <label for="validationCustom01" class="form-label"> Name</label>
                                                             <input type="text" class="form-control" id="validationCustom01" v-model="brandData.name">
                                                             <div class="valid-feedback" v-if="errors.name">
-                                                                {{ errors.name[0] }}
+                                                            {{ errors.name[0] }}
                                                             </div>
                                                         </div>
 
@@ -205,14 +209,14 @@
                                         <label for="validationModel" class="form-label">Model</label>
                                         <i class="bi bi-patch-plus btn text-primary" type="button" data-bs-toggle="modal" data-bs-target="#modelModal"></i>
                                         <v-select v-model="form.product.model_id" label="name" :options="model" :reduce="model => model.id" ></v-select>
-                                        <div class="valid-feedback" v-if="errors.nid">
-                                            {{ errors.nid[0] }}
+                                        <div class="valid-feedback" v-if="errors.modal_id">
+                                            {{ errors.modal_id[0] }}
                                         </div>
                                     </div>
 
                                     <!-- Model Modal-->
                                     <div class="modal fade" id="modelModal" tabindex="-1">
-                                        <div class="modal-dialog">
+                                        <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title">Add New Brand</h5>
@@ -220,7 +224,16 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <form class="row g-3" @submit.prevent="storeModels">
-                                                        <div class="col-md-12">
+                                                        <div class="col-md-4">
+                                                            <label for="validationCustom01" class="form-label"> Category</label>
+                                                            <v-select v-model="modelData.category_id" label="name" :options="categories" :reduce="categories => categories.id" @option:selected="brandByCategory"></v-select>
+                                                        </div>
+
+                                                        <div class="col-md-4">
+                                                            <label for="validationCustom01" class="form-label"> Brand</label>
+                                                            <v-select v-model="modelData.brand_id" label="name" :options="brand" :reduce="brand => brand.id" ></v-select>
+                                                        </div>
+                                                        <div class="col-md-4">
                                                             <label for="validationCustom01" class="form-label"> Name</label>
                                                             <input type="text" class="form-control" id="validationCustom01" v-model="modelData.name">
                                                             <div class="valid-feedback" v-if="errors.name">
@@ -295,7 +308,7 @@
 
                                         <div class="row">
                                             <div class="col-12">
-                                                <span v-for="serial in form.product.serial_arr"><small>{{serial}},</small></span>
+                                                <span v-for="(serial, idx) in form.product.serial_arr"><small @click="removeSerial(idx)">{{serial}},</small></span>
                                             </div>
                                         </div>
 
@@ -335,7 +348,7 @@
                                         <td>{{ ++index }}</td>
                                         <td style="max-width:200px">
 
-                                            {{item.category.name}} {{item.brand.name}} {{item.model.name}} {{ item.specifications}}<br>
+                                            {{item.category.name}} {{item.brand.name}}  {{ item.specifications}}<br>
                                            [<span v-for="serial in item.serial_arr"><small>{{serial}},</small></span>]
                                         </td>
                                         <td class="text-end">{{item.unit_price}}</td>
@@ -411,9 +424,12 @@ export default{
                 web:''
             },
             brandData: {
+                category_id:'',
                 name:''
             },
             modelData: {
+                category_id:'',
+                brand_id:'',
                 name:''
             },
             isAvailable: false,
@@ -472,7 +488,8 @@ export default{
                             icon: 'success',
                             title: 'Brand has been added successfully.'
                         })
-                        this.loadBrand();
+                        this.form.product.brand_id = res.data.brand.id;
+                        this.brand.push(res.data.brand);
                     }
 
                 )
@@ -491,7 +508,8 @@ export default{
                             icon: 'success',
                             title: 'Models has been added successfully.'
                         })
-                        this.loadModel();
+                        this.form.product.model_id = res.data.model.id;
+                        this.model.push(res.data.model);
                     }
                 )
                 .catch(
@@ -635,6 +653,31 @@ export default{
                 console.log(err);
             })
         },
+
+        removeSerial(idx){
+            console.log(idx);
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                this.form.product.serial_arr.splice(idx, 1);
+
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                    this.form.product.qty = this.form.product.serial_arr.length;
+                }
+            });
+
+        }
     }
 
 }

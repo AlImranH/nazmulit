@@ -17,7 +17,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            All Employees
+                            All Purchase
                             <router-link to="/purchase-create" class="btn btn-primary btn-sm float-end">Add Purchase</router-link>
                         </div>
                         <div class="card-body mt-3">
@@ -45,7 +45,7 @@
                                         <td>{{ purchases.total_amount }}</td>
                                         <td>{{ purchases.date }}</td>
                                         <td>
-                                            <a @click="removePurchase(purchases.id)" class="btn btn-danger btn-sm m-1">Delete</a>
+                                            <router-link :to="{name:'editPurchase', params:{id: purchases.id}}" class="btn btn-warning btn-sm m-1"><i class="bi bi-pencil"></i></router-link>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -71,7 +71,7 @@
                         <tr>
                             <th>#</th>
                             <th style="max-width: 200px;">Items</th>
-                            <th class="text-end">Unit Price</th>
+                            <th class="text-end" >Unit Price</th>
                             <th class="text-end">Qty</th>
                             <th class="text-end">Total Price</th>
                         </tr>
@@ -79,14 +79,19 @@
                         <tbody>
                         <tr v-for="(detail, index) in details" :keys="index">
                             <th scope="row">{{ ++index }}</th>
-                            <td style="max-width: 200px;">
-                                {{detail.category.name}} {{detail.brand.name}} {{detail.model.name}} {{detail.specifications}} <br>
+                            <td style="max-width: 300px; min-width: 200px;">
+                                    {{detail.category.name}} {{detail.brand.name}} {{detail.model.name}} {{detail.specifications}} <br>
                                 [<span ><small v-for="serial in detail.serial_arr">{{serial}} ,</small></span>]
                             </td>
-                            <td class="text-end">{{detail.unit_price}}</td>
-                            <td class="text-end">{{detail.qty}}</td>
-                            <td class="text-end">{{detail.total_amount}}</td>
-
+                            <td class="text-end" style="max-width: 100px;">
+                                    {{detail.unit_price}}
+                            </td>
+                            <td class="text-end" style="max-width: 100px;">
+                                    {{detail.qty}}
+                            </td>
+                            <td class="text-end" style="max-width: 100px;">
+                                    {{detail.total_amount}}
+                            </td>
 
                         </tr>
                         </tbody>
@@ -113,9 +118,10 @@
 export default{
     data(){
         return{
+
             purchases: [],
             details: [],
-            searchItem: ''
+            searchItem: '',
         }
     },
     computed:{
@@ -136,7 +142,6 @@ export default{
         allPurchases(){
             axios.get('/api/purchase')
             .then(res => {
-                console.log('ok');
                 this.purchases = res.data;
             })
             .catch(
@@ -144,10 +149,9 @@ export default{
             )
         },
 
-        purchaseDetails(invoiceNO){
-            axios.get('/api/purchase/'+invoiceNO)
+        purchaseDetails(invoiceNo){
+            axios.get('/api/purchase/'+invoiceNo)
                 .then(res => {
-                    console.log(res.data);
                     this.details = res.data;
                 })
                 .catch(error => {
@@ -155,31 +159,14 @@ export default{
                 })
         },
 
-        removePurchase(id){
-            Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-                }).then((result) => {
-                    axios.delete('/api/purchase/'+id)
-                    .then(()=>{
-
-                    })
-                    .catch(() => {
-                        this.$router.push({name:'allEmployee'})
-                    })
-                if (result.isConfirmed) {
-                    Swal.fire({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    icon: "success"
-                    });
-                }
-                });
+        editPurchase(id){
+            axios.get('/api/purchase/edit/'+id)
+            .then(res =>{
+                console.log(res.data);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
         }
     }
 }

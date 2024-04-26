@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -31,15 +32,14 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'category_id' => 'required',
             'name' => 'required|max:255|unique:brands,name',
 
         ]);
-
         try{
-            $category = Brand::create($validated);
+            $brand = Brand::create($validated);
+            $brand->category()->attach($request->category_id);
 
-            return response("Brand has been created successfylly", 200)->header('Content-Type', 'text/plain');
+            return response()->json(['brand'=> $brand, 'success' => "Brand has been created successfylly"]);
 
         }
         catch(Throwable $e){
@@ -52,8 +52,8 @@ class BrandController extends Controller
      */
     public function show($id)
     {
-        $brand = Brand::findOrFail($id);
-        return response()->json($brand);
+        $brand = Brand::where('id', $id)->with('category')->first();
+        return response()->json(['brand'=>$brand, 'category'=>$brand->category]);
     }
 
     /**
@@ -69,13 +69,18 @@ class BrandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'category_id' => 'required',
-            'name' => 'required|max:255|unique:brands,name',
+        $request->validate([
+            'name' => 'required|max:255',
         ]);
-        Brand::find($id)->update($validated);
+
+        $brand = Brand::where('id',$id)->first();
+
+        $brand->name = $request->name;
+        $brand->save();
+        $brand->category()->sync($request->category_id);
 
         return response()->json('Success', 200);
+
     }
 
     /**

@@ -25,7 +25,7 @@
                             <form class="row g-3" @submit.prevent="storeBrand">
                                 <div class="col-md-6">
                                     <label for="validationCustom01" class="form-label"> Category</label>
-                                    <v-select v-model="form.category_id" label="name" :options="categories" :reduce="categories => categories.id" ></v-select>
+                                    <v-select v-model="form.category_id" label="name" :options="categories" :reduce="categories => categories.id" multiple></v-select>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="validationCustom01" class="form-label"> Name</label>
@@ -80,6 +80,7 @@ export default{
             axios.post('api/brand/store', this.form)
             .then(
                 res => {
+                    console.log(res.data);
                     this.$router.push('/brand')
                     Toast.fire({
                         icon: 'success',
@@ -90,7 +91,8 @@ export default{
             )
             .catch(
                 error => {
-                    this.errors = error.response.data.errors;
+                    console.log(error.response);
+                    // this.errors = error.response.data.errors;
                     // console.log(this.errors.full_name[0]);
                 }
             )
